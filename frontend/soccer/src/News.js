@@ -1,6 +1,6 @@
 import React from 'react';
-import { AiOutlineRight } from 'react-icons/ai';
 import NewsImage from './images/imgNews.png';
+import angleRight from './images/angle-left.svg';
 
 const League = () => {
   return (
@@ -8,7 +8,9 @@ const League = () => {
       <div className='bg-black w-11/12 rounded-md  flex-col'>
         <div className='title text-white border-b border-secondary px-4 flex items-center justify-between'>
           <h3 className=' py-2'>Featured News</h3>
-          <AiOutlineRight />
+          <button className='left-arrow font-bold text-lg cursor-pointer'>
+            <img src={angleRight} alt='back arrow' className='w-5 h-5' />
+          </button>
         </div>
         <div className='flex flex-col gap-3 justify-center'>
           <a href='/'>

@@ -9,26 +9,23 @@ const Navbar = () => {
     <nav className='bg-black w-full'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex items-center justify-between h-16'>
-          <div className='flex justify-between items-center basis-2/5'>
-            <a
-              href='/'
-              className='font-bold text-xl flex items-center'
-            >
-              <TbBallFootball className='text-primary' /> <span className='pl-2 text-white'>LOGO</span>
+          <div className='flex justify-start  items-center basis-2/5  '>
+            <a href='/' className='font-bold text-xl flex items-center mr-20'>
+              <TbBallFootball className='text-primary' />{' '}
+              <span className='pl-2 text-white'>LOGO</span>
             </a>
 
-            <a
-              href='/'
-              className='text-primary flex items-center'
-            >
-              <TbBallFootball /> <span className='pl-2'>Scores</span>
-            </a>
-            <a
-              href='/'
-              className='text-tertiary hover:text-primary flex items-center'
-            >
-              <BiNews /> <span className='pl-2'>News</span>
-            </a>
+            <div className='flex items-center justify-start gap-8'>
+              <a href='/' className='text-primary flex items-center'>
+                <TbBallFootball /> <span className='pl-2'>Scores</span>
+              </a>
+              <a
+                href='/'
+                className='text-tertiary hover:text-primary flex items-center'
+              >
+                <BiNews /> <span className='pl-2'>News</span>
+              </a>
+            </div>
           </div>
           <div className='hidden md:block'>
             <div className='ml-10 flex items-center'>
@@ -45,5 +42,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-
