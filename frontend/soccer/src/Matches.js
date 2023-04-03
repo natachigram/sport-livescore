@@ -6,12 +6,15 @@ import one from './images/one.svg';
 import two from './images/two.svg';
 import angleLeft from './images/angle-right.svg';
 import angleRight from './images/angle-left.svg';
+import LiveMatchInfo from './LiveMatchInfo';
 
 const Matches = () => {
   const [isLive, setIsLive] = useState(false);
   const [isAll, setIsAll] = useState(true);
   const [fixture, setFixture] = useState(true);
   const [selectMatchDay, setSelectMatchDay] = useState('today');
+  const [show, setShow] = useState(true);
+  const [isLiveMatchInfo, setIsLiveMatchInfo] = useState(true);
   const matchDayRef = useRef(null);
   const handleIsLive = () => {
     setIsLive(true);
@@ -35,11 +38,27 @@ const Matches = () => {
     setIsLive(false);
     setFixture(true);
   };
+
+  const handleLiveMatchDetail = () => {
+    setShow(false);
+    setIsLiveMatchInfo(false)
+  };
   return (
     <div>
       <div className='flex justify-center '>
         <div className='bg-black w-full rounded-xl  flex-col'>
-          <div className='title h-12 text-white border-b border-tertiary_dark flex justify-center items-center'>
+          <div className={isLiveMatchInfo ? 'hidden' : ''}>
+            {' '}
+            <LiveMatchInfo />
+          </div>
+
+          <div
+            className={
+              show
+                ? 'title h-12 text-white border-b border-tertiary_dark flex justify-center items-center'
+                : 'hidden'
+            }
+          >
             <div className='match-switch'>
               <button
                 className={`text-white   rounded-sm px-4 py-1 text-sm ${
@@ -59,7 +78,13 @@ const Matches = () => {
               </button>
             </div>
           </div>
-          <div className='  text-white border-b border-tertiary_dark flex justify-center items-center h-24'>
+          <div
+            className={
+              show
+                ? '  text-white border-b border-tertiary_dark flex justify-center items-center h-24'
+                : 'hidden'
+            }
+          >
             <div className='match flex justify-between items-center w-full px-5 '>
               <button
                 className='left-arrow font-bold text-lg cursor-pointer'
@@ -135,6 +160,7 @@ const Matches = () => {
               </div>
             </div>
           </div>
+
           <div className=' text-white  flex justify-center items-center mx-5 mt-4'>
             <div className={fixture ? 'matches w-full ' : 'hidden'}>
               <div className='result-per-league  w-full mb-14'>
@@ -239,7 +265,9 @@ const Matches = () => {
             {/* live matches session */}
 
             <div className={!fixture ? 'matches w-full ' : 'hidden'}>
-              <div className='result-per-league  w-full mb-14'>
+              <div
+                className={show ? 'result-per-league  w-full mb-14' : 'hidden'}
+              >
                 <div className='league flex justify-between items-center'>
                   <div className='left-side flex justify-between items-center gap-3'>
                     <Flag code='GB_ENG' width='28' className='rounded-sm' />
@@ -258,7 +286,10 @@ const Matches = () => {
                     />
                   </button>
                 </div>
-                <div className='score-card h-full flex justify-center gap-10 items-center border-b-2 border-primary  mt-8 bg-tertiary_dark/50 px-2 py-5 rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'>
+                <div
+                  onClick={handleLiveMatchDetail}
+                  className='score-card h-full flex justify-center gap-10 items-center border-b-2 border-primary  mt-8 bg-tertiary_dark/50 px-2 py-5 rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'
+                >
                   <div className='team flex flex-col items-center justify-center'>
                     <img src={two} alt='team logo' className='w-12' />
                     <p className='mt-4'>Accrington Stanley</p>
@@ -287,7 +318,9 @@ const Matches = () => {
                   </div>
                 </div>
               </div>
-              <div className='result-per-league  w-full mb-14'>
+              <div
+                className={show ? 'result-per-league  w-full mb-14' : 'hidden'}
+              >
                 <div className='league flex justify-between items-center'>
                   <div className='left-side flex justify-between items-center gap-3'>
                     <Flag code='GB_ENG' width='28' className='rounded-sm' />

@@ -1,8 +1,8 @@
 import React from 'react';
 import { TbBallFootball } from 'react-icons/tb';
 import { BiNews } from 'react-icons/bi';
-import { GiHamburgerMenu } from 'react-icons/gi';
-import SearchBar from './components/SearchBar';
+// import { GiHamburgerMenu } from 'react-icons/gi';
+// import SearchBar from './components/SearchBar';
 
 const Navbar = () => {
   return (
@@ -29,10 +29,10 @@ const Navbar = () => {
           </div>
           <div className='hidden md:block'>
             <div className='ml-10 flex items-center'>
-              <SearchBar />
-              <div className='text-white hover:text-primary px-3 py-2 font-bold text-xl  '>
+              {/* <SearchBar /> */}
+              {/* <div className='text-white hover:text-primary px-3 py-2 font-bold text-xl  '>
                 <GiHamburgerMenu />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
