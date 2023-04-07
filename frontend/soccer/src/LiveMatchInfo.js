@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState,  useEffect } from 'react';
 import Flag from 'react-world-flags';
 import one from './images/one.svg';
 import two from './images/two.svg';
 import backAngle from './images/back_arrow.svg';
-const LiveMatchInfo = () => {
+const LiveMatchInfo = ({ matchId }) => {
   const [selectTab, setSelectTab] = useState('Table');
+  const [matchData, setMatchData] = useState(null);
 
   const handleTab = (tab) => {
     setSelectTab(tab);
   };
+
+  useEffect(() => {
+    if (matchId) {
+      // Fetch data for the selected match using the matchId
+      fetch(`/api/matches/${matchId}`)
+        .then((response) => response.json())
+        .then((data) => setMatchData(data));
+    }
+  }, [matchId]);
 
   return (
     <div className='liveMatchInfo  '>

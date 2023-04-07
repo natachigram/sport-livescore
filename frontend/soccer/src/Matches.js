@@ -1,5 +1,4 @@
-import React, { useRef, useState } from 'react';
-
+import React, { useRef, useState, useEffect } from 'react';
 import { MdOutlineCalendarMonth } from 'react-icons/md';
 import Flag from 'react-world-flags';
 import one from './images/one.svg';
@@ -7,6 +6,8 @@ import two from './images/two.svg';
 import angleLeft from './images/angle-right.svg';
 import angleRight from './images/angle-left.svg';
 import LiveMatchInfo from './LiveMatchInfo';
+import axios from 'axios';
+import { Orbit } from '@uiball/loaders';
 
 const Matches = () => {
   const [isLive, setIsLive] = useState(false);
@@ -16,11 +17,18 @@ const Matches = () => {
   const [show, setShow] = useState(true);
   const [isLiveMatchInfo, setIsLiveMatchInfo] = useState(true);
   const matchDayRef = useRef(null);
+  const [liveMatches, setLiveMatches] = useState([]);
+  const [fixtures, setFixtures] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLiveLoading, setIsLiveLoading] = useState(true);
+  const [selectedMatch, setSelectedMatch] = useState(null);
+
   const handleIsLive = () => {
     setIsLive(true);
     setIsAll(false);
     setFixture(false);
     setSelectMatchDay('');
+    // handleGetLiveMatches();
   };
   const handleIsAll = () => {
     setSelectMatchDay('today');
@@ -41,15 +49,66 @@ const Matches = () => {
 
   const handleLiveMatchDetail = () => {
     setShow(false);
-    setIsLiveMatchInfo(false)
+    setIsLiveMatchInfo(false);
+    handleMatchClick();
   };
+
+  //fetching live matches
+  // const handleGetLiveMatches = () => {
+  //   axios
+  //     .get(
+  //       'https://livescore-api.com/api-client/scores/live.json?&key=uxt8HDH0yM2cJZjq&secret=KN31VFxk1gQjCSF6p8f7MW7lI9xs9QTU'
+  //     )
+  //     .then((response) => {
+  //       setIsLiveLoading(false);
+  //       setLiveMatches(response.data.data.match);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
+
+  useEffect(() => {
+    axios
+      .get(
+        'https://livescore-api.com/api-client/scores/live.json?&key=uxt8HDH0yM2cJZjq&secret=KN31VFxk1gQjCSF6p8f7MW7lI9xs9QTU'
+      )
+      .then((response) => {
+        setIsLiveLoading(false);
+        setLiveMatches(response.data.data.match);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    const fetchFixtures = async () => {
+      const response = await axios.get(
+        'https://livescore-api.com/api-client/fixtures/matches.json?&key=uxt8HDH0yM2cJZjq&secret=KN31VFxk1gQjCSF6p8f7MW7lI9xs9QTU'
+      );
+      setIsLoading(false);
+      setFixtures(response.data.data.fixtures);
+    };
+
+    fetchFixtures();
+  }, []);
+
+  const handleMatchClick = (matchId) => {
+    setSelectedMatch(matchId);
+  };
+
+  const getDayOfWeek = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { weekday: 'long' });
+  };
+
   return (
     <div>
       <div className='flex justify-center '>
         <div className='bg-black w-full rounded-xl  flex-col'>
           <div className={isLiveMatchInfo ? 'hidden' : ''}>
-            {' '}
-            <LiveMatchInfo />
+            <LiveMatchInfo matchId={selectedMatch} />
           </div>
 
           <div
@@ -162,213 +221,132 @@ const Matches = () => {
           </div>
 
           <div className=' text-white  flex justify-center items-center mx-5 mt-4'>
-            <div className={fixture ? 'matches w-full ' : 'hidden'}>
-              <div className='result-per-league  w-full mb-14'>
-                <div className='league flex justify-between items-center'>
-                  <div className='left-side flex justify-between items-center gap-3'>
-                    <Flag code='GB_ENG' width='28' className='rounded-sm' />
-                    <div>
-                      <h1 className='league-title font-bold text-sm'>
-                        League 2
-                      </h1>
-                      <p className='text-xs text-tertiary'>England</p>
+            {isLoading ? (
+              <div className='h-20 flex justify-center items-center'>
+                <Orbit size={35} speed={1.5} color='#121511' />
+              </div>
+            ) : (
+              <div className={fixture ? 'matches w-full ' : 'hidden'}>
+                {fixtures.map((fixed) => (
+                  <div
+                    key={fixed.id}
+                    className='result-per-league  w-full mb-14'
+                  >
+                    <div className='league flex justify-between items-center'>
+                      <div className='left-side flex justify-between items-center gap-3'>
+                        <Flag code='IRN' width='28' className='rounded-sm' />
+                        <div>
+                          <h1 className='league-title font-bold text-sm'>
+                            {fixed.competition.name}
+                          </h1>
+                          <p className='text-xs text-tertiary'>
+                            {fixed.location}
+                          </p>
+                        </div>
+                      </div>
+                      <button className='left-arrow font-bold text-lg cursor-pointer'>
+                        <img
+                          src={angleRight}
+                          alt='back arrow'
+                          className='w-5 h-5'
+                        />
+                      </button>
+                    </div>
+                    <div className='score-card h-32 flex justify-center items-center mt-8 bg-tertiary_dark/50 px-2 py-5 rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'>
+                      <div className='team text-center flex flex-col items-center w-40 h-full justify-evenly'>
+                        <img src={two} alt='team logo' className='w-12' />
+                        <p className='mt-4'>{fixed.home_name}</p>
+                      </div>
+                      <div className='score text-center flex flex-col items-center w-32 h-full justify-evenly'>
+                        <p className='text-2xl font-bold'>
+                          {' '}
+                          {fixed.date.substring(5)}{' '}
+                        </p>
+                        <p className='text-tertiary'>
+                          {getDayOfWeek(fixed.date)}
+                        </p>
+                      </div>
+                      <div className='team text-center flex flex-col items-center w-40 h-full justify-evenly '>
+                        <img src={one} alt='team logo' className='w-12' />
+                        <p className='mt-4'>{fixed.away_name}</p>
+                      </div>
                     </div>
                   </div>
-                  <button className='left-arrow font-bold text-lg cursor-pointer'>
-                    <img
-                      src={angleRight}
-                      alt='back arrow'
-                      className='w-5 h-5'
-                    />
-                  </button>
-                </div>
-                <div className='score-card h-full flex justify-center gap-10 items-center  mt-8 bg-tertiary_dark/50 px-2 py-5 rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'>
-                  <div className='team flex flex-col items-center justify-center'>
-                    <img src={two} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Accrington Stanley</p>
-                  </div>
-                  <div className='score text-center flex flex-col items-center gap-8  h-full'>
-                    <p className='text-2xl font-bold'>20:45</p>
-                    <p className='text-tertiary'>Today</p>
-                  </div>
-                  <div className='team flex flex-col items-center justify-center '>
-                    <img src={one} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Plymouth Argyle</p>
-                  </div>
-                </div>
-                <div className='score-card h-full flex justify-center gap-10 items-center  mt-8 bg-tertiary_dark/50 px-2 py-5 rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'>
-                  <div className='team flex flex-col items-center justify-center'>
-                    <img src={two} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Accrington Stanley</p>
-                  </div>
-                  <div className='score text-center flex flex-col items-center gap-8  h-full'>
-                    <p className='text-2xl font-bold'>20:45</p>
-                    <p className='text-tertiary'>Today</p>
-                  </div>
-                  <div className='team flex flex-col items-center justify-center '>
-                    <img src={one} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Plymouth Argyle</p>
-                  </div>
-                </div>
+                ))}
               </div>
-
-              <div className='result-per-league  w-full mb-14'>
-                <div className='league flex justify-between items-center'>
-                  <div className='left-side flex justify-between items-center gap-3'>
-                    <Flag code='GB_ENG' width='28' className='rounded-sm' />
-                    <div>
-                      <h1 className='league-title font-bold text-sm'>
-                        League 2
-                      </h1>
-                      <p className='text-xs text-tertiary'>England</p>
-                    </div>
-                  </div>
-                  <button className='left-arrow font-bold text-lg cursor-pointer'>
-                    <img
-                      src={angleRight}
-                      alt='back arrow'
-                      className='w-5 h-5'
-                    />
-                  </button>
-                </div>
-                <div className='score-card h-full flex justify-center gap-10 items-center  mt-8 bg-tertiary_dark/50 px-2 py-5 rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'>
-                  <div className='team flex flex-col items-center justify-center'>
-                    <img src={two} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Accrington Stanley</p>
-                  </div>
-                  <div className='score text-center flex flex-col items-center gap-8  h-full'>
-                    <p className='text-2xl font-bold'>20:45</p>
-                    <p className='text-tertiary'>Today</p>
-                  </div>
-                  <div className='team flex flex-col items-center justify-center '>
-                    <img src={one} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Plymouth Argyle</p>
-                  </div>
-                </div>
-                <div className='score-card h-full flex justify-center gap-10 items-center  mt-8 bg-tertiary_dark/50 px-2 py-5 rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'>
-                  <div className='team flex flex-col items-center justify-center'>
-                    <img src={two} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Accrington Stanley</p>
-                  </div>
-                  <div className='score text-center flex flex-col items-center gap-8  h-full'>
-                    <p className='text-2xl font-bold'>20:45</p>
-                    <p className='text-tertiary'>Today</p>
-                  </div>
-                  <div className='team flex flex-col items-center justify-center '>
-                    <img src={one} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Plymouth Argyle</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            )}
 
             {/* live matches session */}
-
-            <div className={!fixture ? 'matches w-full ' : 'hidden'}>
-              <div
-                className={show ? 'result-per-league  w-full mb-14' : 'hidden'}
-              >
-                <div className='league flex justify-between items-center'>
-                  <div className='left-side flex justify-between items-center gap-3'>
-                    <Flag code='GB_ENG' width='28' className='rounded-sm' />
-                    <div>
-                      <h1 className='league-title font-bold text-sm'>
-                        League 2
-                      </h1>
-                      <p className='text-xs text-tertiary'>England</p>
+            {isLiveLoading ? (
+              <div className='h-20 flex justify-center items-center'>
+                <Orbit size={35} speed={1.5} color='#121511' />
+              </div>
+            ) : (
+              <div className={!fixture ? 'matches w-full ' : 'hidden'}>
+                {liveMatches.map((match) => (
+                  <div
+                    key={match.id}
+                    className={
+                      show ? 'result-per-league  w-full mb-14' : 'hidden'
+                    }
+                  >
+                    <div className='league flex justify-between items-center'>
+                      <div className='left-side flex justify-between items-center gap-3'>
+                        {/* <Flag
+                          code={match.country.flag.split('.')[0]}
+                          width='28'
+                          className='rounded-sm'
+                        /> */}
+                        {match.country && match.country.flag && (
+                          <Flag
+                            code={match.country.flag.split('.')[0]}
+                            width='28'
+                            className='rounded-sm'
+                          />
+                        )}
+                        <div>
+                          <h1 className='league-title font-bold text-sm'>
+                            {match.league_name ? ' ' : match.competition_name}
+                          </h1>
+                          {/* <p className='text-xs text-tertiary'>
+                            {match.country.name}
+                          </p> */}
+                          {match.country && (
+                            <p className='text-xs text-tertiary'>
+                              {match.country.name}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <button className='left-arrow font-bold text-lg cursor-pointer'>
+                        <img
+                          src={angleRight}
+                          alt='back arrow'
+                          className='w-5 h-5'
+                        />
+                      </button>
+                    </div>
+                    <div
+                      onClick={handleLiveMatchDetail}
+                      className='score-card h-32 flex justify-center items-center  border-b-2 border-primary  mt-8 bg-tertiary_dark/50  rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'
+                    >
+                      <div className='team text-center flex flex-col items-center w-40 h-full justify-evenly '>
+                        <img src={two} alt='team logo' className='w-12' />
+                        <p className='mt-4'>{match.home_name}</p>
+                      </div>
+                      <div className='score text-center flex flex-col items-center w-32 h-full justify-evenly'>
+                        <p className='text-2xl font-bold'>{match.score}</p>
+                        <p className='text-tertiary'>{match.time}'</p>
+                      </div>
+                      <div className='team text-center flex flex-col items-center w-40 h-full justify-evenly '>
+                        <img src={one} alt='team logo' className='w-12' />
+                        <p className='mt-4'>{match.away_name}</p>
+                      </div>
                     </div>
                   </div>
-                  <button className='left-arrow font-bold text-lg cursor-pointer'>
-                    <img
-                      src={angleRight}
-                      alt='back arrow'
-                      className='w-5 h-5'
-                    />
-                  </button>
-                </div>
-                <div
-                  onClick={handleLiveMatchDetail}
-                  className='score-card h-full flex justify-center gap-10 items-center border-b-2 border-primary  mt-8 bg-tertiary_dark/50 px-2 py-5 rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'
-                >
-                  <div className='team flex flex-col items-center justify-center'>
-                    <img src={two} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Accrington Stanley</p>
-                  </div>
-                  <div className='score text-center flex flex-col items-center gap-8  h-full'>
-                    <p className='text-2xl font-bold'>3 : 7</p>
-                    <p className='text-tertiary'>67'</p>
-                  </div>
-                  <div className='team flex flex-col items-center justify-center '>
-                    <img src={one} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Plymouth Argyle</p>
-                  </div>
-                </div>
-                <div className='score-card h-full flex justify-center gap-10 items-center border-b-2 border-primary  mt-8 bg-tertiary_dark/50 px-2 py-5 rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'>
-                  <div className='team flex flex-col items-center justify-center'>
-                    <img src={two} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Accrington Stanley</p>
-                  </div>
-                  <div className='score text-center flex flex-col items-center gap-8  h-full'>
-                    <p className='text-2xl font-bold'>3 : 7</p>
-                    <p className='text-tertiary'>67'</p>
-                  </div>
-                  <div className='team flex flex-col items-center justify-center '>
-                    <img src={one} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Plymouth Argyle</p>
-                  </div>
-                </div>
+                ))}
               </div>
-              <div
-                className={show ? 'result-per-league  w-full mb-14' : 'hidden'}
-              >
-                <div className='league flex justify-between items-center'>
-                  <div className='left-side flex justify-between items-center gap-3'>
-                    <Flag code='GB_ENG' width='28' className='rounded-sm' />
-                    <div>
-                      <h1 className='league-title font-bold text-sm'>
-                        League 2
-                      </h1>
-                      <p className='text-xs text-tertiary'>England</p>
-                    </div>
-                  </div>
-                  <button className='left-arrow font-bold text-lg cursor-pointer'>
-                    <img
-                      src={angleRight}
-                      alt='back arrow'
-                      className='w-5 h-5'
-                    />
-                  </button>
-                </div>
-                <div className='score-card h-full flex justify-center gap-10 items-center border-b-2 border-primary  mt-8 bg-tertiary_dark/50 px-2 py-5 rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'>
-                  <div className='team flex flex-col items-center justify-center'>
-                    <img src={two} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Accrington Stanley</p>
-                  </div>
-                  <div className='score text-center flex flex-col items-center gap-8  h-full'>
-                    <p className='text-2xl font-bold'>3 : 7</p>
-                    <p className='text-tertiary'>67'</p>
-                  </div>
-                  <div className='team flex flex-col items-center justify-center '>
-                    <img src={one} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Plymouth Argyle</p>
-                  </div>
-                </div>
-                <div className='score-card h-full flex justify-center gap-10 items-center border-b-2 border-primary  mt-8 bg-tertiary_dark/50 px-2 py-5 rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'>
-                  <div className='team flex flex-col items-center justify-center'>
-                    <img src={two} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Accrington Stanley</p>
-                  </div>
-                  <div className='score text-center flex flex-col items-center gap-8  h-full'>
-                    <p className='text-2xl font-bold'>3 : 7</p>
-                    <p className='text-tertiary'>67'</p>
-                  </div>
-                  <div className='team flex flex-col items-center justify-center '>
-                    <img src={one} alt='team logo' className='w-12' />
-                    <p className='mt-4'>Plymouth Argyle</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            )}
 
             {/* live matches session */}
           </div>

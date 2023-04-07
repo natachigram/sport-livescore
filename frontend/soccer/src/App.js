@@ -15,15 +15,14 @@ function App() {
   return (
     <div className=' bg-secondary h-screen overflow-auto'>
       <Navbar />
-      <div class='grid grid-cols-4 h-screen '>
-        <div class='col-span-1 p-4'>
+      <div className='grid grid-cols-4 h-screen '>
+        <div className='col-span-1 p-4'>
           <League handleLeagueClick={handleLeagueClick} />
         </div>
-        <div class=' col-span-2 p-4'>
-          {leagueClicked ? null : <Matches />}
-          <LeagueMatches />
+        <div className=' col-span-2 p-4'>
+          {leagueClicked ? <LeagueMatches /> : <Matches />}
         </div>
-        <div class='col-span-1 p-4'>
+        <div className='col-span-1 p-4'>
           <News />
         </div>
       </div>
