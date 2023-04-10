@@ -1,54 +1,63 @@
-import React, { useState,  useEffect } from 'react';
-import Flag from 'react-world-flags';
-import one from './images/one.svg';
-import two from './images/two.svg';
+import React, { useState } from 'react';
 import backAngle from './images/back_arrow.svg';
-const LiveMatchInfo = ({ matchId }) => {
-  const [selectTab, setSelectTab] = useState('Table');
-  const [matchData, setMatchData] = useState(null);
+import ball from './images/ball.svg';
+import yellow from './images/yellow_card.svg';
+import red from './images/red_card.svg';
+const LiveMatchInfo = ({ match, setIsLiveMatchInfo, setShow }) => {
+  const [selectTab, setSelectTab] = useState('summary');
 
   const handleTab = (tab) => {
     setSelectTab(tab);
   };
 
-  useEffect(() => {
-    if (matchId) {
-      // Fetch data for the selected match using the matchId
-      fetch(`/api/matches/${matchId}`)
-        .then((response) => response.json())
-        .then((data) => setMatchData(data));
-    }
-  }, [matchId]);
+  const handleGoback = () => {
+    setIsLiveMatchInfo(true);
+    setShow(true);
+  };
 
   return (
     <div className='liveMatchInfo  '>
-      <div className='result-per-league  w-full px-4 py-2'>
-        <div className='league flex items-center justify-start gap-12'>
-          <button className=''>
-            <img src={backAngle} alt='back arrow' className='' />
-          </button>
-          <div className='left-side flex gap-4'>
-            <Flag code='GB_ENG' width='28' className='rounded-sm' />
+      <div
+        key={match.match_id}
+        className='result-per-league  w-full mb-14 px-4 py-2 '
+      >
+        <div className='league flex justify-between items-center '>
+          <div className='left-side flex justify-between  items-center gap-3'>
+            <button onClick={handleGoback}>
+              <img src={backAngle} alt='' className='mr-8' />
+            </button>
+            <img
+              src={match.country_logo}
+              className='w-6 h-4 rounded-sm'
+              alt=''
+            />
             <div>
               <h1 className='league-title font-bold text-sm text-white'>
-                League 2
+                {match.league_name}
               </h1>
-              <p className='text-xs text-tertiary'>England</p>
+              <p className='text-xs text-tertiary'>{match.country_name}</p>
             </div>
           </div>
         </div>
-        <div className='score-card h-full flex justify-center gap-10 items-center  mt-8 bg-tertiary_dark/50 px-2 py-5 rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'>
-          <div className='team flex flex-col items-center justify-center'>
-            <img src={two} alt='team logo' className='w-12' />
-            <p className='mt-4 text-white'>Accrington Stanley</p>
+        <div className='score-card h-32 flex justify-center items-center   mt-8 bg-tertiary_dark/50  rounded-xl '>
+          <div className='team text-center flex flex-col items-center w-40 h-full justify-evenly '>
+            <img src={match.team_home_badge} alt='team logo' className='w-12' />
+            <p className='mt-4 text-white font-bold'>
+              {match.match_hometeam_name}
+            </p>
           </div>
-          <div className='score text-center flex flex-col items-center gap-8  h-full'>
-            <p className='text-2xl font-bold text-white'>3 : 7</p>
-            <p className='text-tertiary'>67'</p>
+          <div className='score text-center flex flex-col items-center w-32 h-full justify-evenly'>
+            <p className='text-2xl font-bold text-white'>
+              {' '}
+              {match.match_hometeam_score + ' - ' + match.match_awayteam_score}
+            </p>
+            <p className='text-primary'>{match.match_status}'</p>
           </div>
-          <div className='team flex flex-col items-center justify-center '>
-            <img src={one} alt='team logo' className='w-12' />
-            <p className='mt-4 text-white'>Plymouth Argyle</p>
+          <div className='team text-center flex flex-col items-center w-40 h-full justify-evenly '>
+            <img src={match.team_away_badge} alt='team logo' className='w-12' />
+            <p className='mt-4 text-white font-bold'>
+              {match.match_awayteam_name}
+            </p>
           </div>
         </div>
       </div>
@@ -69,7 +78,7 @@ const LiveMatchInfo = ({ matchId }) => {
         >
           Line-ups
         </button>
-        <button
+        {/* <button
           onClick={() => handleTab('Table')}
           className={`text-white py-2  w-24 text-center font-bold ${
             selectTab === 'Table' ? 'border-b-2 border-primary' : ''
@@ -77,14 +86,7 @@ const LiveMatchInfo = ({ matchId }) => {
         >
           Table
         </button>
-        <button
-          onClick={() => handleTab('News')}
-          className={`text-white py-2  w-24 text-center font-bold ${
-            selectTab === 'News' ? 'border-b-2 border-primary' : ''
-          }`}
-        >
-          News
-        </button>
+
         <button
           onClick={() => handleTab('H2H')}
           className={`text-white py-2  w-24 text-center font-bold ${
@@ -92,43 +94,187 @@ const LiveMatchInfo = ({ matchId }) => {
           }`}
         >
           H2H
-        </button>
+        </button> */}
       </div>
-      <div className='tab-content w-full'>
-        <div className='mx-4 flex items-center  justify-start text-center border border-secondary mt-4 rounded-md '>
-          <button className='text-tertiary py-2  w-10 text-center font-bold'>
-            #
-          </button>
-          <button className='text-tertiary py-2  w-52 text-center font-bold'>
-            Team
-          </button>
-          <button className='text-tertiary py-2  w-10 text-center font-bold'>
-            P
-          </button>
-          <button className='text-tertiary py-2  w-10 text-center font-bold'>
-            W
-          </button>
-          <button className='text-tertiary py-2  w-10 text-center font-bold'>
-            D
-          </button>
-          <button className='text-tertiary py-2  w-10 text-center font-bold'>
-            L
-          </button>
-          <button className='text-tertiary py-2  w-10 text-center font-bold'>
-            F
-          </button>
-          <button className='text-tertiary py-2  w-10 text-center font-bold'>
-            A
-          </button>
-          <button className='text-tertiary py-2  w-10 text-center font-bold'>
-            GD
-          </button>
-          <button className='text-tertiary py-2  w-10 text-center font-bold'>
-            PTS
-          </button>
-          <div></div>
+      {/* output lineups*/}
+
+      {selectTab === 'line-ups' && (
+        <div className='lineups-container flex justify-between py-4 px-8'>
+          <div className='home-lineups text-white '>
+            <h2 className='text-center mb-4  font-bold'>Home</h2>
+            <div className='starting mb-10 text-sm'>
+              <h3 className='text-center mb-2 text-tertiary'>
+                Starting Lineups
+              </h3>
+              {match.lineup.home.starting_lineups.map((player) => (
+                <p
+                  key={player.player_key}
+                  className='text-primary flex flex-col justify-center items-center mb-4'
+                >
+                  <div className='bg-secondary rounded-full w-10 text-primary text-center py-2 font-bold w-10 '>
+                    {player.lineup_number}
+                  </div>{' '}
+                  <span>{player.lineup_player}</span>
+                </p>
+              ))}
+            </div>
+            <div className='sub mb-10 text-sm'>
+              <h3 className='text-center text-tertiary mb-2'>Substitutes</h3>
+              {match.lineup.home.substitutes.map((player) => (
+                <p
+                  key={player.player_key}
+                  className='text-primary flex flex-col justify-center items-center mb-4'
+                >
+                  <div className='bg-secondary rounded-full w-10 text-primary text-center py-2 font-bold w-10 '>
+                    {player.lineup_number}
+                  </div>{' '}
+                  <span>{player.lineup_player}</span>
+                </p>
+              ))}
+            </div>
+
+            <div className='coach text-sm'>
+              <h3 className='text-center mb-1 '>Coach</h3>
+              {match.lineup.home.coach.map((player) => (
+                <p key={player.player_key} className='text-primary text-center'>
+                  {player.lineup_player}
+                </p>
+              ))}
+            </div>
+          </div>
+          {/* away side */}
+          <div className='home-lineups text-white '>
+            <h2 className='text-center mb-4 font-bold'>Away</h2>
+            <div className='starting mb-10 text-sm'>
+              <h3 className='text-center mb-2 text-tertiary'>
+                Starting Lineups
+              </h3>
+              {match.lineup.away.starting_lineups.map((player) => (
+                <p
+                  key={player.player_key}
+                  className='text-primary flex flex-col justify-center items-center mb-4'
+                >
+                  <div className='bg-secondary rounded-full w-10 text-primary text-center py-2 font-bold w-10 '>
+                    {player.lineup_number}
+                  </div>{' '}
+                  <span>{player.lineup_player}</span>
+                </p>
+              ))}
+            </div>
+            <div className='sub mb-10 text-sm'>
+              <h3 className='text-center text-tertiary mb-2 '>Substitutes</h3>
+              {match.lineup.away.substitutes.map((player) => (
+                <p
+                  key={player.player_key}
+                  className='text-primary flex flex-col justify-center items-center mb-4'
+                >
+                  <div className='bg-secondary rounded-full w-10 text-primary text-center py-2 font-bold w-10 '>
+                    {player.lineup_number}
+                  </div>{' '}
+                  <span>{player.lineup_player}</span>
+                </p>
+              ))}
+            </div>
+
+            <div className='coach text-sm '>
+              <h3 className='text-center mb-1'>Coach</h3>
+              {match.lineup.away.coach.map((player) => (
+                <p key={player.player_key} className='text-primary text-center'>
+                  {player.lineup_player}
+                </p>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* output summary */}
+      {selectTab === 'summary' && (
+        <div
+          className='summary-container flex flex-col items-center my-4 mx-4 rounded-lg border border-secondary '
+          // style={{ height: '700px' }}
+        >
+          <div className='summary-header w-full h-14 flex items-center py-8 '>
+            <div className='text-tertiary basis-1/2 pl-20 text-xs '>TIME</div>
+            <div className='flex items-center space-x-28'>
+              <img
+                src={match.team_home_badge}
+                alt='team logo'
+                className='w-8 h-8 basis-1/2'
+              />
+              <img
+                src={match.team_away_badge}
+                alt='team logo'
+                className='w-8 h-8 basis-1/2'
+              />
+            </div>
+          </div>
+          <div className='summary-data bg-tertiary_dark w-11/12 h-full rounded-lg mb-4 flex flex-col text-sm '>
+            <div>
+              {match.goalscorer.map((goal) => (
+                <div className='w-full flex items-center  py-4 px-2'>
+                  <div className='basis-1/2 flex items-center justify-evenly'>
+                    <span className='mr-4 text-tertiary'>{goal.time}'</span>
+                    <span className='text-white font-bold'>{goal.score}</span>
+                  </div>
+                  {goal.home_scorer ? (
+                    <span className='flex items-center justify-start font-bold text-white  basis-1/2'>
+                      <img src={ball} alt='ball' className='mr-2' />{' '}
+                      {goal.home_scorer}
+                    </span>
+                  ) : (
+                    <span className='flex items-center justify-end font-bold text-white  basis-1/2'>
+                      <img src={ball} alt='ball' className='mr-2' />
+                      {goal.away_scorer}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className='my-4'>
+              {match.cards.map((card) => (
+                <div className='flex items-center'>
+                  <span className='pl-16 text-tertiary basis-1/2  '>
+                    {card.time}'
+                  </span>
+
+                  <span className='font-bold text-white flex items-center justify-end basis-1/2'>
+                    {card.info === 'home' ? (
+                      <span className=' flex w-full'>
+                        {card.card === 'red card' ? (
+                          <span className='flex items-center'>
+                            <img src={red} alt='card' /> {card.info}
+                            {card.home_fault}
+                          </span>
+                        ) : (
+                          <span className='flex items-center'>
+                            <img src={yellow} alt='card' /> {card.info}
+                            {card.home_fault}
+                          </span>
+                        )}
+                      </span>
+                    ) : (
+                      <span className='mr-4'>
+                        {card.card === 'red card' ? (
+                          <span className='flex items-center'>
+                            <img src={red} alt='card' /> {card.info}
+                            {card.away_fault}
+                          </span>
+                        ) : (
+                          <span className='flex items-center'>
+                            <img src={yellow} alt='card' /> {card.info}
+                            {card.away_fault}
+                          </span>
+                        )}
+                      </span>
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

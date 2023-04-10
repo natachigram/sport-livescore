@@ -1,31 +1,55 @@
 import React from 'react';
-import { useState } from 'react';
-// import angleRight from './images/angle-left.svg';
-import Flag from 'react-world-flags';
+import { useState, useEffect } from 'react';
+// import Flag from 'react-world-flags';
+import backAngle from './images/back_arrow.svg';
 import one from './images/one.svg';
 import two from './images/two.svg';
+import axios from 'axios';
 
-const LeagueMatches = () => {
-  const [activeBtn, setActiveBtn] = useState('fixtures');
-  // const [showResult, setShowResult] = useState(false);
-  // const [showFixtures, setShowFixtures] = useState('fixtures');
-  // const [showTable, setShowTable] = useState(false);
+const LeagueMatches = ({
+  leagueId,
+  leagueName,
+  leagueCountry,
+  setLeagueClicked,
+}) => {
+  const [activeBtn, setActiveBtn] = useState('table');
+  const [standings, setStandings] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `https://apiv3.apifootball.com/?action=get_standings&league_id=${leagueId}&APIkey=9f48e7b126b0365fb1b37e9c077cd6dbd6ea7c7bbd4d3944b217dddde75cc362`
+      )
+      .then((response) => {
+        const sortedStandings = response.data.sort(
+          (a, b) => a.overall_league_position - b.overall_league_position
+        );
+        setStandings(sortedStandings);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [leagueId]);
 
   const handleActiveBtn = (btn) => {
     setActiveBtn(btn);
   };
+
+  const handleGoback = () => {setLeagueClicked(false)};
 
   return (
     <div className='flex justify-center'>
       <div className='bg-black w-full rounded-xl  flex-col px-8 py-2 h-full'>
         <div className='league flex justify-between items-center'>
           <div className='left-side flex justify-between items-center gap-3'>
-            <Flag code='GB_ENG' width='28' className='rounded-sm' />
+            <button onClick={handleGoback}>
+              <img src={backAngle} alt='' className='mr-8' />
+            </button>
             <div>
               <h1 className='league-title font-bold text-sm text-white'>
-                Premier League
+                {leagueName}
               </h1>
-              <p className='text-xs text-tertiary'>England</p>
+              <p className='text-xs text-tertiary'>{leagueCountry}</p>
             </div>
           </div>
         </div>
@@ -138,41 +162,71 @@ const LeagueMatches = () => {
 
         {/* table tab-content */}
         <div
-          className={
-            activeBtn === 'table' ? 'table-content mb-8' : 'hidden'
-          }
+          className={activeBtn === 'table' ? 'table-content mb-8' : 'hidden'}
         >
-          <div className='flex items-center  justify-start text-center border border-secondary mt-8 rounded-md '>
-            <button className='text-tertiary py-2  w-10 text-center font-bold'>
-              #
-            </button>
-            <button className='text-tertiary py-2  w-52 text-center font-bold'>
-              Team
-            </button>
-            <button className='text-tertiary py-2  w-10 text-center font-bold'>
-              P
-            </button>
-            <button className='text-tertiary py-2  w-10 text-center font-bold'>
-              W
-            </button>
-            <button className='text-tertiary py-2  w-10 text-center font-bold'>
-              D
-            </button>
-            <button className='text-tertiary py-2  w-10 text-center font-bold'>
-              L
-            </button>
-            <button className='text-tertiary py-2  w-10 text-center font-bold'>
-              F
-            </button>
-            <button className='text-tertiary py-2  w-10 text-center font-bold'>
-              A
-            </button>
-            <button className='text-tertiary py-2  w-10 text-center font-bold'>
-              GD
-            </button>
-            <button className='text-tertiary py-2  w-10 text-center font-bold'>
-              PTS
-            </button>
+          <div className=' rounded-md p-4'>
+            <table className='w-full'>
+              <thead>
+                <tr className='text-tertiary '>
+                  <th className='py-2 text-left'>#</th>
+                  <th className='py-2 text-left'>Team</th>
+                  <th className='py-2 text-left'>PTS</th>
+                  <th className='py-2 text-left'>P</th>
+                  <th className='py-2 text-left'>W</th>
+                  <th className='py-2 text-left'>D</th>
+                  <th className='py-2 text-left'>L</th>
+                  <th className='py-2 text-left'>F</th>
+                  <th className='py-2 text-left'>A</th>
+                  <th className='py-2 text-left'>GD</th>
+                </tr>
+              </thead>
+              <tbody>
+                {standings.map((standing) => (
+                  <tr className='' key={standing.team_id}>
+                    <td className='py-2 text-white'>
+                      {standing.overall_league_position}
+                    </td>
+                    <td className='py-2 text-white flex items-center'>
+                      {!standing.team_badge ? (
+                        ''
+                      ) : (
+                        <img
+                          src={standing.team_badge}
+                          className='w-6 h-5 mr-2'
+                          alt=''
+                        />
+                      )}
+
+                      {standing.team_name}
+                    </td>
+                    <td className='py-2 text-tertiary'>
+                      {standing.overall_league_PTS}
+                    </td>
+                    <td className='py-2 text-tertiary'>
+                      {standing.overall_league_payed}
+                    </td>
+                    <td className='py-2 text-tertiary'>
+                      {standing.overall_league_W}
+                    </td>
+                    <td className='py-2 text-tertiary'>
+                      {standing.overall_league_D}
+                    </td>
+                    <td className='py-2 text-tertiary'>
+                      {standing.overall_league_L}
+                    </td>
+                    <td className='py-2 text-tertiary'>
+                      {standing.overall_league_GF}
+                    </td>
+                    <td className='py-2 text-tertiary'>
+                      {standing.overall_league_GA}
+                    </td>
+                    <td className='py-2 text-tertiary'>
+                      {standing.overall_league_GD}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
         {/* table tab-content */}

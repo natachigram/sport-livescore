@@ -10,8 +10,8 @@ import axios from 'axios';
 import { Orbit } from '@uiball/loaders';
 
 const Matches = () => {
-  const [isLive, setIsLive] = useState(false);
-  const [isAll, setIsAll] = useState(true);
+  const [isLive, setIsLive] = useState(true);
+  const [isAll, setIsAll] = useState(false);
   const [fixture, setFixture] = useState(true);
   const [selectMatchDay, setSelectMatchDay] = useState('today');
   const [show, setShow] = useState(true);
@@ -25,8 +25,9 @@ const Matches = () => {
 
   const handleIsLive = () => {
     setIsLive(true);
-    setIsAll(false);
     setFixture(false);
+    setIsAll(false);
+    
     setSelectMatchDay('');
     // handleGetLiveMatches();
   };
@@ -50,32 +51,20 @@ const Matches = () => {
   const handleLiveMatchDetail = () => {
     setShow(false);
     setIsLiveMatchInfo(false);
-    handleMatchClick();
   };
 
-  //fetching live matches
-  // const handleGetLiveMatches = () => {
-  //   axios
-  //     .get(
-  //       'https://livescore-api.com/api-client/scores/live.json?&key=uxt8HDH0yM2cJZjq&secret=KN31VFxk1gQjCSF6p8f7MW7lI9xs9QTU'
-  //     )
-  //     .then((response) => {
-  //       setIsLiveLoading(false);
-  //       setLiveMatches(response.data.data.match);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
+
 
   useEffect(() => {
     axios
       .get(
-        'https://livescore-api.com/api-client/scores/live.json?&key=uxt8HDH0yM2cJZjq&secret=KN31VFxk1gQjCSF6p8f7MW7lI9xs9QTU'
+        'https://apiv3.apifootball.com/?action=get_events&match_live=1&APIkey=9f48e7b126b0365fb1b37e9c077cd6dbd6ea7c7bbd4d3944b217dddde75cc362'
       )
       .then((response) => {
         setIsLiveLoading(false);
-        setLiveMatches(response.data.data.match);
+        setFixture(false);
+        console.log(response.data)
+        setLiveMatches(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -108,7 +97,15 @@ const Matches = () => {
       <div className='flex justify-center '>
         <div className='bg-black w-full rounded-xl  flex-col'>
           <div className={isLiveMatchInfo ? 'hidden' : ''}>
-            <LiveMatchInfo matchId={selectedMatch} />
+            {selectedMatch && (
+              <LiveMatchInfo
+                match={liveMatches.find(
+                  (match) => match.match_id === selectedMatch
+                )}
+                setIsLiveMatchInfo={setIsLiveMatchInfo}
+                setShow={setShow}
+              />
+            )}
           </div>
 
           <div
@@ -285,37 +282,26 @@ const Matches = () => {
               <div className={!fixture ? 'matches w-full ' : 'hidden'}>
                 {liveMatches.map((match) => (
                   <div
-                    key={match.id}
+                    key={match.match_id}
                     className={
                       show ? 'result-per-league  w-full mb-14' : 'hidden'
                     }
+                    onClick={() => handleMatchClick(match.match_id)}
                   >
                     <div className='league flex justify-between items-center'>
                       <div className='left-side flex justify-between items-center gap-3'>
-                        {/* <Flag
-                          code={match.country.flag.split('.')[0]}
-                          width='28'
-                          className='rounded-sm'
-                        /> */}
-                        {match.country && match.country.flag && (
-                          <Flag
-                            code={match.country.flag.split('.')[0]}
-                            width='28'
-                            className='rounded-sm'
-                          />
-                        )}
+                        <img
+                          src={match.country_logo}
+                          className='w-6 h-4 rounded-sm'
+                          alt=''
+                        />
                         <div>
                           <h1 className='league-title font-bold text-sm'>
-                            {match.league_name ? ' ' : match.competition_name}
+                            {match.league_name}
                           </h1>
-                          {/* <p className='text-xs text-tertiary'>
-                            {match.country.name}
-                          </p> */}
-                          {match.country && (
-                            <p className='text-xs text-tertiary'>
-                              {match.country.name}
-                            </p>
-                          )}
+                          <p className='text-xs text-tertiary'>
+                            {match.country_name}
+                          </p>
                         </div>
                       </div>
                       <button className='left-arrow font-bold text-lg cursor-pointer'>
@@ -331,16 +317,28 @@ const Matches = () => {
                       className='score-card h-32 flex justify-center items-center  border-b-2 border-primary  mt-8 bg-tertiary_dark/50  rounded-xl hover:cursor-pointer hover:bg-tertiary_dark'
                     >
                       <div className='team text-center flex flex-col items-center w-40 h-full justify-evenly '>
-                        <img src={two} alt='team logo' className='w-12' />
-                        <p className='mt-4'>{match.home_name}</p>
+                        <img
+                          src={match.team_home_badge}
+                          alt='team logo'
+                          className='w-12'
+                        />
+                        <p className='mt-4'>{match.match_hometeam_name}</p>
                       </div>
                       <div className='score text-center flex flex-col items-center w-32 h-full justify-evenly'>
-                        <p className='text-2xl font-bold'>{match.score}</p>
-                        <p className='text-tertiary'>{match.time}'</p>
+                        <p className='text-2xl font-bold'>
+                          {match.match_hometeam_score +
+                            ' - ' +
+                            match.match_awayteam_score}
+                        </p>
+                        <p className='text-tertiary'>{match.match_status}'</p>
                       </div>
                       <div className='team text-center flex flex-col items-center w-40 h-full justify-evenly '>
-                        <img src={one} alt='team logo' className='w-12' />
-                        <p className='mt-4'>{match.away_name}</p>
+                        <img
+                          src={match.team_away_badge}
+                          alt='team logo'
+                          className='w-12'
+                        />
+                        <p className='mt-4'>{match.match_awayteam_name}</p>
                       </div>
                     </div>
                   </div>
