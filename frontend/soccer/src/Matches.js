@@ -22,12 +22,12 @@ const Matches = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLiveLoading, setIsLiveLoading] = useState(true);
   const [selectedMatch, setSelectedMatch] = useState(null);
-
+  const [eventData, setEventData] = useState(null);
   const handleIsLive = () => {
     setIsLive(true);
     setFixture(false);
     setIsAll(false);
-    
+
     setSelectMatchDay('');
     // handleGetLiveMatches();
   };
@@ -53,8 +53,6 @@ const Matches = () => {
     setIsLiveMatchInfo(false);
   };
 
-
-
   useEffect(() => {
     axios
       .get(
@@ -63,7 +61,7 @@ const Matches = () => {
       .then((response) => {
         setIsLiveLoading(false);
         setFixture(false);
-        console.log(response.data)
+        console.log(response.data);
         setLiveMatches(response.data);
       })
       .catch((error) => {
@@ -71,16 +69,52 @@ const Matches = () => {
       });
   }, []);
 
+  // useEffect(() => {
+  //   const fetchFixtures = async () => {
+  //     const response = await axios.get(
+  //       'https://livescore-api.com/api-client/fixtures/matches.json?&key=uxt8HDH0yM2cJZjq&secret=KN31VFxk1gQjCSF6p8f7MW7lI9xs9QTU'
+  //     );
+  //     setIsLoading(false);
+  //     setFixtures(response.data.data.fixtures);
+  //   };
+
+  //   fetchFixtures();
+  // }, []);
   useEffect(() => {
-    const fetchFixtures = async () => {
-      const response = await axios.get(
-        'https://livescore-api.com/api-client/fixtures/matches.json?&key=uxt8HDH0yM2cJZjq&secret=KN31VFxk1gQjCSF6p8f7MW7lI9xs9QTU'
-      );
-      setIsLoading(false);
-      setFixtures(response.data.data.fixtures);
+    // fetch(
+    //   'https://v3.football.api-sports.io/fixtures/rounds?season=2019&league=61',
+    //   {
+    //     method: 'GET',
+    //     headers: {
+    //       'X-RapidAPI-Key':
+    //         'fd5b9b9f11msh49bee81c6c65307p14842ajsnf38555d36a01',
+    //       'X-RapidAPI-Host': 'api-football-v1.p.rapidapi.com',
+    //     },
+    //   }
+    // )
+    //   .then((response) => {
+    //     console.log(response);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+    const options = {
+      url: 'https://api-football-v1.p.rapidapi.com/v3/fixtures',
+      params: { next: '50' },
+      headers: {
+        'X-RapidAPI-Key': 'fd5b9b9f11msh49bee81c6c65307p14842ajsnf38555d36a01',
+        'X-RapidAPI-Host': 'api-football-v1.p.rapidapi.com',
+      },
     };
 
-    fetchFixtures();
+    axios
+      .get(options)
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
   }, []);
 
   const handleMatchClick = (matchId) => {
@@ -94,8 +128,8 @@ const Matches = () => {
 
   return (
     <div>
-      <div className='flex justify-center '>
-        <div className='bg-black w-full rounded-xl  flex-col'>
+      <div className='flex justify-center  '>
+        <div className='bg-black w-full rounded-xl  max-h-screen overflow-scroll flex-col'>
           <div className={isLiveMatchInfo ? 'hidden' : ''}>
             {selectedMatch && (
               <LiveMatchInfo
@@ -219,9 +253,10 @@ const Matches = () => {
 
           <div className=' text-white  flex justify-center items-center mx-5 mt-4'>
             {isLoading ? (
-              <div className='h-20 flex justify-center items-center'>
-                <Orbit size={35} speed={1.5} color='#121511' />
-              </div>
+              // <div className='h-20 flex justify-center items-center'>
+              //   <Orbit size={35} speed={1.5} color='#121511' />
+              // </div>
+              ''
             ) : (
               <div className={fixture ? 'matches w-full ' : 'hidden'}>
                 {fixtures.map((fixed) => (

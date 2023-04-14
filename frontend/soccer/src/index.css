@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Hide scrollbar in Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar in Chrome, Safari and Opera */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Set transparent background and no border for scrollbar track */
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  border: none;
+}
+
+/* Set transparent background and no border for scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border: none;
+}

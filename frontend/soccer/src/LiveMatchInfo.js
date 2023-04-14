@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import backAngle from './images/back_arrow.svg';
 import ball from './images/ball.svg';
 import yellow from './images/yellow_card.svg';
 import red from './images/red_card.svg';
 const LiveMatchInfo = ({ match, setIsLiveMatchInfo, setShow }) => {
   const [selectTab, setSelectTab] = useState('summary');
+  const [h2hData, setH2hData] = useState(null);
 
   const handleTab = (tab) => {
     setSelectTab(tab);
@@ -14,6 +15,18 @@ const LiveMatchInfo = ({ match, setIsLiveMatchInfo, setShow }) => {
     setIsLiveMatchInfo(true);
     setShow(true);
   };
+
+  useEffect(() => {
+    async function fetchH2hData() {
+      const response = await fetch(
+        `https://apiv3.apifootball.com/?action=get_H2H&firstTeamId=${match.match_hometeam_id}&secondTeamId=${match.match_awayteam_id}&APIkey=9f48e7b126b0365fb1b37e9c077cd6dbd6ea7c7bbd4d3944b217dddde75cc362`
+      );
+      const data = await response.json();
+      setH2hData(data);
+      console.log(data);
+    }
+    fetchH2hData();
+  }, []);
 
   return (
     <div className='liveMatchInfo  '>
@@ -85,7 +98,7 @@ const LiveMatchInfo = ({ match, setIsLiveMatchInfo, setShow }) => {
           }`}
         >
           Table
-        </button>
+        </button> */}
 
         <button
           onClick={() => handleTab('H2H')}
@@ -94,7 +107,7 @@ const LiveMatchInfo = ({ match, setIsLiveMatchInfo, setShow }) => {
           }`}
         >
           H2H
-        </button> */}
+        </button>
       </div>
       {/* output lineups*/}
 
@@ -273,6 +286,44 @@ const LiveMatchInfo = ({ match, setIsLiveMatchInfo, setShow }) => {
               ))}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* output head2head */}
+      {selectTab === 'H2H' && (
+        <div className='h2h-container'>
+          {h2hData ? (
+            <div className='score-card h-32 flex justify-center gap-10 items-center  mt-8 bg-tertiary_dark/50 rounded-xl mx-5'>
+              <div
+                key={match.match_id}
+                className='team flex flex-col items-center justify-center'
+              >
+                <img
+                  src={match.team_home_badge}
+                  alt='team logo'
+                  className='w-12'
+                />
+                <p className='mt-4 text-white'>{match.match_hometeam_name}</p>
+              </div>
+              <div className='score text-center flex flex-col items-center justify-center gap-2  h-full'>
+                <p className='text-tertiary text-sm'>{match.match_date}</p>
+                <p className='text-2xl font-bold text-white'>
+                  {match.match_hometeam_score + ' : ' + match.match_awayteam_score}
+                </p>
+                <p className='text-tertiary text-sm'> {match.match_status} </p>
+              </div>
+              <div className='team flex flex-col items-center justify-center '>
+                <img
+                  src={match.team_away_badge}
+                  alt='team logo'
+                  className='w-12'
+                />
+                <p className='mt-4 text-white'>{match.match_awayteam_name}</p>
+              </div>
+            </div>
+          ) : (
+            <p>Loading...</p>
+          )}
         </div>
       )}
     </div>

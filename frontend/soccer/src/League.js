@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { AiOutlineSearch } from 'react-icons/ai';
 import axios from 'axios';
 
 const League = ({ handleLeagueClick }) => {
   const [leagues, setLeagues] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     axios
@@ -20,20 +22,46 @@ const League = ({ handleLeagueClick }) => {
       });
   }, []);
 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredLeagues = leagues.filter((league) =>
+    league.league_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className='flex justify-end '>
-      <div className='bg-black basis-3/4 rounded-md  flex-col'>
-        <div className='title text-white border-b border-secondary '>
+    <div className='flex justify-end'>
+      <div className='bg-black basis-3/4 rounded-md flex-col max-h-screen overflow-y-scroll'>
+        <div className='title text-white border-b border-secondary'>
           <h3 className='px-6 py-2'>Leagues</h3>
         </div>
+        <div className='flex items-center justify-center bg-secondary text-tertiary  font-medium  p-2 rounded-md mx-3 mt-2'>
+          <span className=' ml-4 flex justify-end items-center text-xl font-bold'>
+            <AiOutlineSearch />
+          </span>
+          <input
+            className='bg-transparent ml-2 border-none outline-none'
+            type='text'
+            placeholder='Search leagues...'
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </div>
         <div className='leagues-data text-white'>
-          {leagues.map((league) => (
-            <div>
-              <button onClick={()=> handleLeagueClick(league.league_id, league.league_name, league.country_name)} className='py-2 px-5'>
-                <div
-                  className=' text-left font-bold text-sm flex items-center gap-2'
-                  key={league.league_id}
-                >
+          {filteredLeagues.map((league) => (
+            <div key={league.league_id}>
+              <button
+                onClick={() =>
+                  handleLeagueClick(
+                    league.league_id,
+                    league.league_name,
+                    league.country_name
+                  )
+                }
+                className='py-2 px-5'
+              >
+                <div className=' text-left font-bold text-sm flex items-center gap-2'>
                   {!league.league_logo ? (
                     ''
                   ) : (
@@ -50,7 +78,7 @@ const League = ({ handleLeagueClick }) => {
           ))}
         </div>
 
-        <div className='footer text-white border-t border-secondary  '>
+        <div className='footer text-white border-t border-secondary'>
           <h3 className='px-6 py-2'>See More</h3>
         </div>
       </div>
