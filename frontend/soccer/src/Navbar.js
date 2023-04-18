@@ -1,10 +1,10 @@
 import React from 'react';
 import { TbBallFootball } from 'react-icons/tb';
 import { BiNews } from 'react-icons/bi';
-// import { GiHamburgerMenu } from 'react-icons/gi';
+import { GiHamburgerMenu } from 'react-icons/gi';
 // import SearchBar from './components/SearchBar';
 
-const Navbar = () => {
+const Navbar = ({handleBtn, setShowLeague, ham}) => {
   return (
     <nav className='bg-black w-full'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
@@ -15,24 +15,24 @@ const Navbar = () => {
               <span className='pl-2 text-white'>LOGO</span>
             </a>
 
-            <div className='flex items-center justify-start gap-8'>
+            <div className='hidden md:flex items-center justify-start gap-8'>
               <a href='/' className='text-primary flex items-center'>
                 <TbBallFootball /> <span className='pl-2'>Scores</span>
               </a>
-              <a
+              {/* <a
                 href='/'
                 className='text-tertiary hover:text-primary flex items-center'
               >
                 <BiNews /> <span className='pl-2'>News</span>
-              </a>
+              </a> */}
             </div>
           </div>
-          <div className='hidden md:block'>
-            <div className='ml-10 flex items-center'>
+          <div className='md:hidden'>
+            <div className='flex items-center'>
               {/* <SearchBar /> */}
-              {/* <div className='text-white hover:text-primary px-3 py-2 font-bold text-xl  '>
+             {ham ? <div className='text-white hover:text-primary px-3 py-2 font-bold text-xl  ' onClick={()=> handleBtn(setShowLeague(true))}>
                 <GiHamburgerMenu />
-              </div> */}
+              </div> : ''}
             </div>
           </div>
         </div>
