@@ -300,7 +300,7 @@ const LiveMatchInfo = ({ match, setIsLiveMatchInfo, setShow }) => {
               >
                 <img
                   src={match.team_home_badge}
-                  alt='team logo'
+                  alt=''
                   className='w-12'
                 />
                 <p className='mt-4 text-white'>{match.match_hometeam_name}</p>
@@ -315,7 +315,7 @@ const LiveMatchInfo = ({ match, setIsLiveMatchInfo, setShow }) => {
               <div className='team flex flex-col items-center justify-center '>
                 <img
                   src={match.team_away_badge}
-                  alt='team logo'
+                  alt=''
                   className='w-12'
                 />
                 <p className='mt-4 text-white'>{match.match_awayteam_name}</p>
