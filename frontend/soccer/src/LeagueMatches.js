@@ -59,11 +59,11 @@ const LeagueMatches = ({
 
   return (
     <div className='flex justify-center'>
-      <div className='bg-black w-full rounded-xl  flex-col px-8 py-2 h-full'>
+      <div className='bg-black w-full rounded-xl p-4  flex-col md:px-8 py-2 h-full'>
         <div className='league flex justify-between items-center'>
           <div className='left-side flex justify-between items-center gap-3'>
             <button onClick={handleGoback}>
-              <img src={backAngle} alt='' className='mr-8' />
+              <img src={backAngle} alt='' className=' mr-2 md:mr-8' />
             </button>
             <div>
               <h1 className='league-title font-bold text-sm text-white'>
@@ -84,7 +84,7 @@ const LeagueMatches = ({
           >
             Fixtures
           </button>
-          <button
+          {/* <button
             onClick={() => handleActiveBtn('results')}
             className={` ${
               activeBtn === 'results'
@@ -93,7 +93,7 @@ const LeagueMatches = ({
             } `}
           >
             Results
-          </button>
+          </button> */}
           <button
             onClick={() => handleActiveBtn('table')}
             className={` ${
@@ -113,7 +113,9 @@ const LeagueMatches = ({
         >
           <div lassName='score-card h-full flex justify-center gap-10 items-center  mt-8 bg-tertiary_dark/50 px-2 py-5 rounded-xl '>
             {loaders ? (
-              <p className='text-primary font-bold w-full text-center pt-4'>No Matches Found</p>
+              <p className='text-primary font-bold w-full text-center pt-4'>
+                No Matches Found
+              </p>
             ) : (
               <>
                 {liveMatches.map((match) => (
@@ -121,7 +123,6 @@ const LeagueMatches = ({
                     key={match.match_id}
                     className={'result-per-league  w-full mb-14'}
                   >
-                    
                     <div className='score-card h-32 flex justify-center items-center  border-b-2 border-primary  mt-8 bg-tertiary_dark/50  rounded-xl'>
                       <div className='team text-center flex flex-col items-center w-40 h-full justify-evenly '>
                         <img
@@ -129,7 +130,9 @@ const LeagueMatches = ({
                           alt='team logo'
                           className='w-12'
                         />
-                        <p className='mt-4 text-white'>{match.match_hometeam_name}</p>
+                        <p className='mt-4 text-white'>
+                          {match.match_hometeam_name}
+                        </p>
                       </div>
                       <div className='score text-center flex flex-col items-center w-32 h-full justify-evenly'>
                         <p className='text-2xl text-white font-bold'>
@@ -145,7 +148,9 @@ const LeagueMatches = ({
                           alt='team logo'
                           className='w-12'
                         />
-                        <p className='mt-4 text-white'>{match.match_awayteam_name}</p>
+                        <p className='mt-4 text-white'>
+                          {match.match_awayteam_name}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -198,29 +203,29 @@ const LeagueMatches = ({
         <div
           className={activeBtn === 'table' ? 'table-content mb-8' : 'hidden'}
         >
-          <div className=' rounded-md p-4'>
+          <div className=' rounded-md md:p-4'>
             <table className='w-full'>
               <thead>
                 <tr className='text-tertiary '>
-                  <th className='py-2 text-left'>#</th>
-                  <th className='py-2 text-left'>Team</th>
-                  <th className='py-2 text-left'>PTS</th>
-                  <th className='py-2 text-left'>P</th>
-                  <th className='py-2 text-left'>W</th>
-                  <th className='py-2 text-left'>D</th>
-                  <th className='py-2 text-left'>L</th>
-                  <th className='py-2 text-left'>F</th>
+                  <th className='py-2 text-left pr-1'>#</th>
+                  <th className='py-2 text-left pr-1'>Team</th>
+                  <th className='py-2 text-left pr-1'>PTS</th>
+                  <th className='py-2 text-left pr-1'>P</th>
+                  <th className='py-2 text-left pr-1'>W</th>
+                  <th className='py-2 text-left pr-1'>D</th>
+                  <th className='py-2 text-left pr-1'>L</th>
+                  <th className='py-2 text-left pr-1'>F</th>
                   <th className='py-2 text-left'>A</th>
-                  <th className='py-2 text-left'>GD</th>
+                  {/* <th className='py-2 text-left'>GD</th> */}
                 </tr>
               </thead>
               <tbody>
                 {standings.map((standing) => (
                   <tr className='' key={standing.league_id}>
-                    <td className='py-2 text-white'>
+                    <td className='py-2 pr-1 text-white'>
                       {standing.overall_league_position}
                     </td>
-                    <td className='py-2 text-white flex items-center'>
+                    <td className='py-2 text-white pr-1 flex items-center'>
                       {!standing.team_badge ? (
                         ''
                       ) : (
@@ -233,30 +238,30 @@ const LeagueMatches = ({
 
                       {standing.team_name}
                     </td>
-                    <td className='py-2 text-tertiary'>
+                    <td className='py-2 pr-1 text-tertiary'>
                       {standing.overall_league_PTS}
                     </td>
-                    <td className='py-2 text-tertiary'>
+                    <td className='py-2 pr-1 text-tertiary'>
                       {standing.overall_league_payed}
                     </td>
-                    <td className='py-2 text-tertiary'>
+                    <td className='py-2 pr-1 text-tertiary'>
                       {standing.overall_league_W}
                     </td>
-                    <td className='py-2 text-tertiary'>
+                    <td className='py-2 pr-1 text-tertiary'>
                       {standing.overall_league_D}
                     </td>
-                    <td className='py-2 text-tertiary'>
+                    <td className='py-2 pr-1 text-tertiary'>
                       {standing.overall_league_L}
                     </td>
-                    <td className='py-2 text-tertiary'>
+                    <td className='py-2 pr-1 text-tertiary'>
                       {standing.overall_league_GF}
                     </td>
-                    <td className='py-2 text-tertiary'>
+                    <td className='py-2 pr-1 text-tertiary'>
                       {standing.overall_league_GA}
                     </td>
-                    <td className='py-2 text-tertiary'>
+                    {/* <td className='py-2 pr-1 text-tertiary'>
                       {standing.overall_league_GD}
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>

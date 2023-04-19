@@ -359,7 +359,7 @@ const Matches = () => {
                         />
                         <p className='mt-4'>{match.match_hometeam_name}</p>
                       </div>
-                      <div className='score text-center flex flex-col items-center w-32 h-full justify-evenly'>
+                      <div className='score text-center flex flex-col items-center w-32 h-full justify-between py-3'>
                         <p className='text-2xl font-bold'>
                           {match.match_hometeam_score +
                             ' - ' +

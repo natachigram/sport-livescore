@@ -306,11 +306,11 @@ const LiveMatchInfo = ({ match, setIsLiveMatchInfo, setShow }) => {
                 <p className='mt-4 text-white'>{match.match_hometeam_name}</p>
               </div>
               <div className='score text-center flex flex-col items-center justify-center gap-2  h-full'>
-                <p className='text-tertiary text-sm'>{match.match_date}</p>
+                <p className='text-tertiary text-xs md:text-sm'>{match.match_date}</p>
                 <p className='text-2xl font-bold text-white'>
                   {match.match_hometeam_score + ' : ' + match.match_awayteam_score}
                 </p>
-                <p className='text-tertiary text-sm'> {match.match_status} </p>
+                <p className='text-tertiary text-xs md:text-sm'> {match.match_status} </p>
               </div>
               <div className='team flex flex-col items-center justify-center '>
                 <img
