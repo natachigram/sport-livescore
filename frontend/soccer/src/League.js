@@ -44,6 +44,12 @@ const League = ({ handleLeagueClick, setShowLeague, setHam }) => {
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
+    if(searchTerm === ''){
+      setSeeMore(false)
+    }else{
+      // setSearchTerm('')
+      setSeeMore(true);
+    }
   };
 
   const filteredLeagues = leagues.filter((league) =>
@@ -78,12 +84,12 @@ const League = ({ handleLeagueClick, setShowLeague, setHam }) => {
           <input
             className='bg-transparent ml-2 border-none outline-none'
             type='text'
-            placeholder='Search leagues...'
+            placeholder='Search leagues'
             value={searchTerm}
             onChange={handleSearch}
           />
         </div>
-        <div className='leagues-data text-white'>
+        {!seeMore ? <div className='leagues-data text-white'>
           {popularLeagues.map((league) => (
             <div key={league.league_id}>
               <button
@@ -111,7 +117,7 @@ const League = ({ handleLeagueClick, setShowLeague, setHam }) => {
               </button>
             </div>
           ))}
-        </div>
+        </div> : ''}
         {seeMore ? <div className='leagues-data text-white'>
           {filteredLeagues.map((league) => (
             <div key={league.league_id}>
