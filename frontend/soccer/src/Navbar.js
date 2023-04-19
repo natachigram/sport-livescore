@@ -2,6 +2,7 @@ import React from 'react';
 import { TbBallFootball } from 'react-icons/tb';
 import { BiNews } from 'react-icons/bi';
 import { GiHamburgerMenu } from 'react-icons/gi';
+import Logo from './images/logo.svg'
 // import SearchBar from './components/SearchBar';
 
 const Navbar = ({handleBtn, setShowLeague, ham}) => {
@@ -11,8 +12,9 @@ const Navbar = ({handleBtn, setShowLeague, ham}) => {
         <div className='flex items-center justify-between h-16'>
           <div className='flex justify-start  items-center basis-2/5  '>
             <a href='/' className='font-bold text-xl flex items-center mr-20'>
-              <TbBallFootball className='text-primary' />{' '}
-              <span className='pl-2 text-white'>LOGO</span>
+              {/* <TbBallFootball className='text-primary' />{' '} */}
+              <img src={Logo} alt="" />
+              {/* <span className='pl-2 text-white'>LOGO</span> */}
             </a>
 
             <div className='hidden md:flex items-center justify-start gap-8'>

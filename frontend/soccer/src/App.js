@@ -60,7 +60,7 @@ function App() {
             <Matches />
           )}
         </div>
-        <div className='hidden md:block col-span-1 p-4'>
+        <div className='hidden '>
           <News />
         </div>
       </div>
