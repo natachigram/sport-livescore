@@ -354,7 +354,7 @@ const Matches = () => {
                       <div className='team text-center flex flex-col items-center w-40 h-full justify-evenly '>
                         <img
                           src={match.team_home_badge}
-                          alt='team logo'
+                          alt=' '
                           className='w-12'
                         />
                         <p className='mt-4'>{match.match_hometeam_name}</p>
@@ -370,7 +370,7 @@ const Matches = () => {
                       <div className='team text-center flex flex-col items-center w-40 h-full justify-evenly '>
                         <img
                           src={match.team_away_badge}
-                          alt='team logo'
+                          alt=''
                           className='w-12'
                         />
                         <p className='mt-4'>{match.match_awayteam_name}</p>
