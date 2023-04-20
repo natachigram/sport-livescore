@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Footer from './Footer';
 import League from './League';
 import LeagueMatches from './LeagueMatches';
 import Matches from './Matches';
@@ -64,6 +65,7 @@ function App() {
           <News />
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
